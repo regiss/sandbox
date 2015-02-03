@@ -9,12 +9,16 @@ use Nette,
 
 class SignFormFactory extends Nette\Object
 {
+	/** @var FormFactory */
+	private $factory;
+
 	/** @var User */
 	private $user;
 
 
-	public function __construct(User $user)
+	public function __construct(FormFactory $factory, User $user)
 	{
+		$this->factory = $factory;
 		$this->user = $user;
 	}
 
@@ -22,9 +26,9 @@ class SignFormFactory extends Nette\Object
 	/**
 	 * @return Form
 	 */
-	public function create()
+	public function create($onSuccess = NULL)
 	{
-		$form = new Form;
+		$form = $this->factory->create();
 		$form->addText('username', 'Username:')
 			->setRequired('Please enter your username.');
 
@@ -36,6 +40,9 @@ class SignFormFactory extends Nette\Object
 		$form->addSubmit('send', 'Sign in');
 
 		$form->onSuccess[] = array($this, 'formSucceeded');
+		if ($onSuccess) {
+			$form->onSuccess[] = $onSuccess;
+		}
 		return $form;
 	}
 

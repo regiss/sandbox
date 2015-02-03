@@ -3,13 +3,14 @@
 namespace App\Presenters;
 
 use Nette,
-	App\Forms\SignFormFactory;
+	App\Forms\SignFormFactory,
+	App\Forms\TemplateControl;
 
 
 /**
  * Sign in/out presenters.
  */
-class SignPresenter extends BasePresenter
+class Sign3Presenter extends BasePresenter
 {
 	/** @var SignFormFactory @inject */
 	public $factory;
@@ -21,17 +22,10 @@ class SignPresenter extends BasePresenter
 	 */
 	protected function createComponentSignInForm()
 	{
-		return $this->factory->create(function ($form) {
+		$form = $this->factory->create(function ($form) {
 			$form->getPresenter()->redirect('Homepage:');
 		});
-	}
-
-
-	public function actionOut()
-	{
-		$this->getUser()->logout();
-		$this->flashMessage('You have been signed out.');
-		$this->redirect('in');
+		return new TemplateControl($form, __DIR__ . '/templates/components/form.latte');
 	}
 
 }
